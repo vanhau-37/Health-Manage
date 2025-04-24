@@ -1,15 +1,12 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-
+import React, { Component } from "react";
+import { connect } from "react-redux";
 import * as actions from "../../store/actions";
-import Navigator from '../../components/Navigator';
-import { adminMenu } from './menuApp';
-import './Header.scss';
-
+import Navigator from "../../components/Navigator";
+import { adminMenu } from "./menuApp";
+import "./Header.scss";
 class Header extends Component {
-
     render() {
-        const { processLogout } = this.props;
+        const { processLogout, userInfo } = this.props;
 
         return (
             <div className="header-container">
@@ -18,23 +15,29 @@ class Header extends Component {
                     <Navigator menus={adminMenu} />
                 </div>
 
-                {/* nút logout */}
-                <div className="btn btn-logout" onClick={processLogout}>
-                    <i className="fas fa-sign-out-alt"></i>
+                <div className="left-content">
+                    <span className="welcome">Welcom, { userInfo&&userInfo.unique_name ? userInfo.unique_name:'' }!</span>
+                    <div
+                        className="btn btn-logout"
+                        onClick={processLogout}
+                        title="Log out"
+                    >
+                        <i className="fas fa-sign-out-alt"></i>
+                    </div>
                 </div>
             </div>
         );
     }
-
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
     return {
-        isLoggedIn: state.admin.isLoggedIn
+        isLoggedIn: state.user.isLoggedIn,
+        userInfo: state.user.userInfo,
     };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
     return {
         processLogout: () => dispatch(actions.processLogout()),
     };

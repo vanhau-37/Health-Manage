@@ -1,0 +1,83 @@
+// .search-container {
+//     position        : fixed;
+//     top             : 60px;
+//     // background      : #000000;
+//     left            : 0;
+//     right           : 0;
+//     border-bottom: 1px solid black;
+
+//     .search-input {
+//         text-align   : end;
+//         padding      : 5px;
+//         padding-right: 40px;
+//     }
+// }
+
+.disease-container {
+    .box {
+        height: 58px;
+    }
+
+    .disease-content {
+        margin    : 60px 150px;
+        background: #ddd;
+        box-shadow: -5px -5px 3px rgb(152, 149, 149);
+        cursor    : pointer;
+
+        .content-up {
+            font-size     : 18px;
+            padding       : 10px 30px;
+            text-transform: capitalize;
+        }
+
+        .content-down {
+            display     : flex;
+            // flex-wrap: wrap;
+            gap         : 0 2%;
+            font-size   : 15px;
+            padding     : 0px 30px 10px 30px;
+            width       : 100%;
+
+            .disease-image {
+                height           : 112px;
+                width            : 130px;
+                background-size  : contain;
+                background-repeat: no-repeat;
+            }
+
+            .child-content {
+                border-radius     : 30px;
+                width             : 49%;
+                height            : 111px;
+                background        : white;
+                padding           : 11px 14px 0 14px;
+                display           : -webkit-box;
+                -webkit-line-clamp: 4;
+                line-clamp        : 4;
+                -webkit-box-orient: vertical;
+                overflow          : hidden;
+                text-overflow     : ellipsis;
+                line-height       : 27px;
+
+                &.add-width {
+                    width: 100%;
+                }
+            }
+        }
+
+        // .content-right {
+        //     display        : flex;
+        //     flex-direction : column;
+        //     justify-content: space-around;
+        //     width          : 170px;
+        //     padding-right  : 30px;
+
+        // }
+    }
+}
+
+.pagination {
+    display        : flex;
+    justify-content: center;
+    margin         : 20px;
+}

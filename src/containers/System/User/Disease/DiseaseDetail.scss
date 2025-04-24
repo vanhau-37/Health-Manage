@@ -1,0 +1,61 @@
+.box {
+    height: 58px;
+}
+
+.btutton-back {
+    button {
+        cursor    : pointer;
+        width     : 40px;
+        height    : 40px;
+        position  : fixed;
+        top       : 85px;
+        left      : 25px;
+        border    : none;
+        background: none;
+
+        i {
+            font-size: 24px;
+        }
+    }
+}
+
+.disease-detail-container {
+    margin: 0 150px;
+
+    .title {
+        text-align    : center;
+        text-transform: uppercase;
+        font-weight   : bold;
+        font-size     : 30px;
+        margin-top    : 25px;
+        color         : #0071ba;
+    }
+
+    .group-content {
+        display   : flex;
+        margin-top: 30px;
+        gap       : 3%;
+
+        .image {
+            width            : 45%;
+            height           : 371px;
+            margin-top       : 10px;
+            background-repeat: no-repeat;
+            background-size  : contain;
+        }
+
+        .symptom {
+            font-size: 17px;
+            width    : 52%;
+
+            p {
+                font-weight: bold;
+            }
+
+        }
+    }
+
+    .description {
+        font-size : 17px;
+    }
+}

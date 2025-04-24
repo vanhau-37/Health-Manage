@@ -4,7 +4,8 @@ import { push } from "connected-react-router";
 import * as actions from "../../store/actions";
 import "./Login.scss";
 import { handleLoginApi } from "../../services/userService";
-// import { FormattedMessage } from 'react-intl';
+import { jwtDecode } from "jwt-decode";
+import HomeHeader from "../HomePage/HomeHeader";
 
 class Login extends Component {
     constructor(props) {
@@ -31,7 +32,7 @@ class Login extends Component {
         });
     };
 
-    handleLogin = async (event) => {
+    handleLogin = async () => {
         this.setState({
             errMessage: {
                 email: "",
@@ -39,15 +40,16 @@ class Login extends Component {
             },
         });
         try {
-            let data = await handleLoginApi({
+            let response = await handleLoginApi({
                 email: this.state.username,
                 password: this.state.password,
             });
-            if (data.status) {
-                //todo
+            if (response.status) {
+                let token = response.data; // Lấy token từ API
+                let userInfo = jwtDecode(token);
+                this.props.userLoginSuccess(token, userInfo); // Gọi action để lưu token
             }
         } catch (e) {
-            // console.log("API error:", e.response.data);
             if (e.response && e.response.status === 400) {
                 this.setState({
                     errMessage: {
@@ -56,9 +58,8 @@ class Login extends Component {
                     },
                 });
                 if (!e.response.data.status) {
-                    alert(e.response.data.message)
+                    alert(e.response.data.message);
                 }
-                    
             }
         }
     };
@@ -69,80 +70,92 @@ class Login extends Component {
         });
     };
 
+    handleViewPage = () => {
+        this.props.history.push("/register");
+    };
+
     render() {
         return (
-            <div className="login-backgroud">
-                <div className="login-container">
-                    <div className="login-content row">
-                        <div className="col-12 text-login">Login</div>
-                        <div className="col-12 form-group login-input">
-                            <label>Tài khoản:</label>
-                            <input
-                                type="text"
-                                className="form-control"
-                                placeholder="Nhập tài khoản"
-                                value={this.state.username}
-                                onChange={(d) => {
-                                    this.handleOnChangeUsername(d);
-                                }}
-                            />
-                        <div className="col-12 err-message">
-                            {this.state.errMessage.email}
-                        </div>
-                        </div>
-                        <div className="col-12 form-group login-input">
-                            <label>Mật khẩu:</label>
-
-                            <div className="custom-input-password">
+            <>
+                <HomeHeader />
+                <div className="login-backgroud">
+                    <div className="login-container">
+                        <div className="login-content row">
+                            <div className="col-12 text-login">Login</div>
+                            <div className="col-12 form-group login-input">
+                                <label>Tài khoản:</label>
                                 <input
-                                    type={
-                                        this.state.isShowPass
-                                            ? "text"
-                                            : "password"
-                                    }
+                                    type="text"
                                     className="form-control"
-                                    placeholder="Nhập mật khẩu"
-                                    value={this.state.password}
+                                    placeholder="Nhập tài khoản"
+                                    value={this.state.username}
                                     onChange={(d) => {
-                                        this.handleOnChangePassword(d);
+                                        this.handleOnChangeUsername(d);
                                     }}
                                 />
-                                <span
-                                    onClick={(event) => {
-                                        this.handleShowPassword(event);
+                                <div className="col-12 err-message">
+                                    {this.state.errMessage.email}
+                                </div>
+                            </div>
+                            <div className="col-12 form-group login-input">
+                                <label>Mật khẩu:</label>
+
+                                <div className="custom-input-password">
+                                    <input
+                                        type={
+                                            this.state.isShowPass
+                                                ? "text"
+                                                : "password"
+                                        }
+                                        className="form-control"
+                                        placeholder="Nhập mật khẩu"
+                                        value={this.state.password}
+                                        onChange={(d) => {
+                                            this.handleOnChangePassword(d);
+                                        }}
+                                    />
+                                    <span
+                                        onClick={(event) => {
+                                            this.handleShowPassword(event);
+                                        }}
+                                    >
+                                        <i
+                                            className={
+                                                this.state.isShowPass
+                                                    ? "fa-solid fa-eye"
+                                                    : "fa-solid fa-eye-slash"
+                                            }
+                                        ></i>
+                                    </span>
+                                </div>
+                                <div className="col-12 err-message">
+                                    {this.state.errMessage.password}
+                                </div>
+                            </div>
+                            <div className="col-12 ">
+                                <button
+                                    className="btn-login"
+                                    onClick={() => {
+                                        this.handleLogin();
                                     }}
                                 >
-                                    <i
-                                        class={
-                                            this.state.isShowPass
-                                                ? "fa-solid fa-eye"
-                                                : "fa-solid fa-eye-slash"
-                                        }
-                                    ></i>
+                                    Login
+                                </button>
+                            </div>
+                            <div className="col-12">
+                                <span
+                                    className="register"
+                                    onClick={() => {
+                                        this.handleViewPage("/login");
+                                    }}
+                                >
+                                    Đăng ký
                                 </span>
                             </div>
-                            <div className="col-12 err-message">
-                                {this.state.errMessage.password}
-                            </div>
-                        </div>
-                        <div className="col-12 ">
-                            <button
-                                className="btn-login"
-                                onClick={(event) => {
-                                    this.handleLogin(event);
-                                }}
-                            >
-                                Login
-                            </button>
-                        </div>
-                        <div className="col-12">
-                            <span className="forgot-password">
-                                Quên mật khẩu
-                            </span>
                         </div>
                     </div>
                 </div>
-            </div>
+            </>
         );
     }
 }
@@ -156,9 +169,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         navigate: (path) => dispatch(push(path)),
-        adminLoginSuccess: (adminInfo) =>
-            dispatch(actions.adminLoginSuccess(adminInfo)),
-        adminLoginFail: () => dispatch(actions.adminLoginFail()),
+        userLoginSuccess: (token, userInfo) =>
+            dispatch(actions.userLoginSuccess(token, userInfo)),
     };
 };
 
