@@ -10,6 +10,6 @@ namespace health_backend.Services.Interfaces
 		Task<BaseResponseModel> CreateSymptom(SymptomDto model);
 		Task<BaseResponseModel> UpdateSymptom(SymptomDto model);
 		Task<BaseResponseModel> DeleteSymptom(int id);
-		Task<BaseResponseModel> SearchSymptom(string searchText);
+		Task<BaseResponseModel> SearchSymptom(string? searchText);
 	}
 }

@@ -7,6 +7,7 @@ namespace health_backend.Models.Dtos
 		public int Id { get; set; }
 		public string Name { get; set; }
 		public string Description { get; set; }
+		public string MarkdownContent { get; set; }
 		//list of symptom
 		public ICollection<SymptomDto> ListSymptom { get; set; }
 		public string Image { get; set; }

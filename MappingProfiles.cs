@@ -13,7 +13,12 @@ namespace health_backend
 			CreateMap<Symptom, SymptomDto>();			
 			CreateMap<SymptomDto, Symptom>().ForMember(x => x.ListDisease, y => y.Ignore());
 			CreateMap<User, UserDto>();
-			CreateMap<RegisterRequestModel, User>().ForMember(x => x.Password, y => y.Ignore());
+			CreateMap<RegisterRequestModel, User>()
+				.ForMember(x => x.Password, y => y.Ignore())
+				.ForMember(dest => dest.Role, opt => opt.Condition(src => src.Role.HasValue));
+			CreateMap<UpdatedRequestModel, User>().ForMember(x => x.Password, y => y.Ignore());
+			CreateMap<HealthStatus, HealthStatusDto>();
+			CreateMap<HealthStatus, HealthStatusDetail>();
 		}
 	}
 }

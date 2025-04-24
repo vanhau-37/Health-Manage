@@ -7,9 +7,10 @@ namespace health_backend.Services.Interfaces
 	{
 		Task<BaseResponseModel> GetUsers(int pageIndex, int pageSize);
 		Task<BaseResponseModel> GetUserById(int userId);
-		Task<BaseResponseModel> DeleteUser(int userId);
+		Task<BaseResponseModel> DeletedUser(int userId);
 		Task<BaseResponseModel> Register(RegisterRequestModel model);
 		Task<BaseResponseModel> Login(LoginRequestModel model);
+		Task<BaseResponseModel> UpdatedUser(UpdatedRequestModel model);
 
 	}
 }

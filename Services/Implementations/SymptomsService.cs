@@ -99,11 +99,15 @@ namespace health_backend.Services.Implementations
 			try
 			{
 				var symptomCount = await _dbContext.Symptoms.CountAsync();
-				var symptomList = _mapper.Map<List<SymptomDto>>( await _dbContext.Symptoms.Skip(pageSize * pageIndex).Take(pageSize).OrderByDescending(x => x.Id).ToListAsync());
+				var symptomList = _mapper.Map<List<SymptomDto>>( await _dbContext
+					.Symptoms.OrderByDescending(x => x.Id)
+					.Skip(pageSize * pageIndex)
+					.Take(pageSize)
+					.ToListAsync());
 				
 				response.Status = true;
 				response.Message = "Success";
-				response.Data = new {Symptoms = symptomList, Count = symptomCount};
+				response.Data = new {Symptoms = symptomList, TotalPage =Math.Ceiling((float)symptomCount/pageSize)};
 
 			}
 			catch (Exception)
@@ -114,19 +118,31 @@ namespace health_backend.Services.Implementations
 			return response;
 		}
 
-		public async Task<BaseResponseModel> SearchSymptom(string searchText)
+		public async Task<BaseResponseModel> SearchSymptom(string? searchText)
 		{
 			BaseResponseModel response = new BaseResponseModel();
 			try
 			{
-				var search = await _dbContext.Symptoms.Where(x => x.Name.Contains(searchText)).Select(y => new
+				if (searchText == null|| searchText == "")
 				{
-					y.Id,
-					y.Name,
-				}).ToListAsync();
+					var search = await _dbContext.Symptoms.Select(y => new
+					{
+						y.Id,
+						y.Name,
+					}).ToListAsync();
+					response.Data = search;
+				}
+				else
+				{
+					var search = await _dbContext.Symptoms.Where(x => x.Name.Contains(searchText)).Select(y => new
+					{
+						y.Id,
+						y.Name,
+					}).ToListAsync();
+					response.Data = search;
+				}
 				response.Status = true;
 				response.Message = "Success";
-				response.Data = search;
 
 			}
 			catch (Exception)
@@ -150,7 +166,7 @@ namespace health_backend.Services.Implementations
 					response.Message = "Du lieu khong ton tai";
 					return response;
 				}
-				//chi cap nhat thuoc tinh co trong dto
+				//chi cap nhat thuoc tinh co trong symptomdto
 				_mapper.Map(model, symptomDetail);
 
 				_dbContext.SaveChanges();

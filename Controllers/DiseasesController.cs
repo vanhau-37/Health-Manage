@@ -19,9 +19,9 @@ namespace health_backend.Controllers
         }
         // GET: api/<DiseaseController>
         [HttpGet]
-		public async Task<IActionResult> Get(int pageIndex = 0, int pageSize = 5)
+		public async Task<IActionResult> Get(string? stringText, int pageIndex = 0, int pageSize = 5)
 		{
-			var result = await _service.GetDiseases(pageIndex, pageSize);
+			var result = await _service.GetDiseases(stringText, pageIndex, pageSize);
 			if(result.Status) return Ok(result);
 			return BadRequest(result);
 		}
@@ -63,9 +63,8 @@ namespace health_backend.Controllers
 
 		[HttpPost]
 		[Route("upload-Disease-image")]
-		public async Task<IActionResult> Post(IFormFile imgFile, string? oldImageUrl)
+		public async Task<IActionResult> Post(IFormFile imgFile, [FromForm] string? oldImageUrl)
 		{
-			
 			var result = await _service.AddImgDisease(imgFile, oldImageUrl, HttpContext);
 			if (result.Status) 
 				return Ok(result);

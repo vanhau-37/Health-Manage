@@ -32,11 +32,16 @@ namespace health_backend.Services.Implementations
 			try
 			{
 				var userCount = await _dbContext.Users.CountAsync();
-				var userList = await _dbContext.Users.Skip(pageSize * pageIndex).Take(pageSize).OrderByDescending(x => x.Id).ToListAsync();
+				var userList = _mapper.Map<List<UserDto>>( 
+					await _dbContext.Users
+					.OrderByDescending(x => x.Id)
+					.Skip(pageSize * pageIndex)
+					.Take(pageSize)
+					.ToListAsync());
 				
 				response.Status = true;
 				response.Message = "Success";
-				response.Data = new { users = userList, Count = userCount };
+				response.Data = new { users = userList, TotalPage =Math.Ceiling((float)userCount / pageSize) };
 
 			}
 			catch (Exception)
@@ -53,7 +58,7 @@ namespace health_backend.Services.Implementations
 			try
 			{
 				var user = await _dbContext.Users.Where(x => x.Email == model.Email).FirstOrDefaultAsync();
-				if (user == null || !VerifyPassword(user.Password, model.Password))
+				if (user == null || !VerifyPassword(model.Password, user.Password))
 				{
 					response.Status = false;
 					response.Message = "Mat khau hoac tai khoan sai.";
@@ -71,7 +76,7 @@ namespace health_backend.Services.Implementations
 			}
 			return response;
 		}
-		private bool VerifyPassword(string passwordHash, string password)
+		private bool VerifyPassword(string password, string passwordHash)
 		{
 			return BCrypt.Net.BCrypt.Verify(password, passwordHash);
 		}
@@ -101,7 +106,7 @@ namespace health_backend.Services.Implementations
 			return response;
 		}
 
-		public async Task<BaseResponseModel> DeleteUser(int userId)
+		public async Task<BaseResponseModel> DeletedUser(int userId)
 		{
 			BaseResponseModel response = new BaseResponseModel();
 			try
@@ -169,7 +174,8 @@ namespace health_backend.Services.Implementations
 				}
 
 				var hashPassword = BCrypt.Net.BCrypt.HashPassword(model.Password);
-				var newUser = _mapper.Map<User>(model);
+				var newUser = new User();
+				newUser = _mapper.Map<User>(model);
 				newUser.Password = hashPassword;
 
 				_dbContext.Users.Add(newUser);
@@ -178,6 +184,47 @@ namespace health_backend.Services.Implementations
 				response.Status = true;
 				response.Message = "Success";
 				response.Data = newUser;
+			}
+			catch (Exception)
+			{
+
+				response.Status = false;
+				response.Message = "Đã xảy ra lỗi";
+			}
+			return response;
+		}
+
+		public async Task<BaseResponseModel> UpdatedUser(UpdatedRequestModel model)
+		{
+			BaseResponseModel response = new BaseResponseModel();
+			try
+			{
+				var existUser = await _dbContext.Users.Where(x => x.Id == model.Id).FirstOrDefaultAsync();
+				if (existUser == null)
+				{
+					response.Status = false;
+					response.Message = "Người dùng không tồn tại";
+					return response;
+				}
+
+				if(VerifyPassword(model.Password, existUser.Password))
+				{
+					var hashPassword = BCrypt.Net.BCrypt.HashPassword(model.PasswordNew);
+					_mapper.Map(model, existUser);
+					existUser.Password = hashPassword;
+
+					await _dbContext.SaveChangesAsync();
+
+					response.Status = true;
+					response.Message = "Success";
+					response.Data = existUser;
+				}
+				else
+				{
+					response.Status = false;
+					response.Message = "Mật khẩu không chính xác";
+				}
+				
 			}
 			catch (Exception)
 			{

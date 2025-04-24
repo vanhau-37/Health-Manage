@@ -18,7 +18,7 @@ namespace health_backend.Controllers
         }
         // GET: api/<SymptomsController>
         [HttpGet]
-		public async Task<IActionResult> Get(int pageIndex = 0, int pageSize = 5)
+		public async Task<IActionResult> Get(int pageIndex = 0, int pageSize = 7)
 		{
 			var result = await _service.GetSymptoms(pageIndex, pageSize);
 			if(result.Status) return Ok(result);
@@ -34,8 +34,8 @@ namespace health_backend.Controllers
 			return BadRequest(result);
 		}
 		[HttpGet]
-		[Route("search/{searchText}")]
-		public async Task<IActionResult> Get(string searchText)
+		[Route("search")]
+		public async Task<IActionResult> Get(string? searchText)
 		{
 			var result = await _service.SearchSymptom(searchText);
 			if (result.Status) return Ok(result);

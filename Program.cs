@@ -11,7 +11,6 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-//builder.Services.AddCors();
 builder.Services.AddControllers();
 
 //Add database
@@ -25,35 +24,35 @@ builder.Services.AddAutoMapper(typeof(Program));
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-//builder.Services.AddSwaggerGen(options =>
-//{
-//	var jwtSecurityScheme = new OpenApiSecurityScheme
-//	{
-//		BearerFormat = "JWT",
-//		Name = "Authorization",
-//		In = ParameterLocation.Header,
-//		Type = SecuritySchemeType.Http,
-//		Scheme = JwtBearerDefaults.AuthenticationScheme,
-//		Description = "Enter your JWT Access Token",
-//		Reference = new OpenApiReference
-//		{
-//			Id = JwtBearerDefaults.AuthenticationScheme,
-//			Type = ReferenceType.SecurityScheme
-//		}
-//	};
+builder.Services.AddSwaggerGen(options =>
+{
+	var jwtSecurityScheme = new OpenApiSecurityScheme
+	{
+		BearerFormat = "JWT",
+		Name = "Authorization",
+		In = ParameterLocation.Header,
+		Type = SecuritySchemeType.Http,
+		Scheme = JwtBearerDefaults.AuthenticationScheme,
+		Description = "Enter your JWT Access Token",
+		Reference = new OpenApiReference
+		{
+			Id = JwtBearerDefaults.AuthenticationScheme,
+			Type = ReferenceType.SecurityScheme
+		}
+	};
 
-//	options.AddSecurityDefinition("Bearer", jwtSecurityScheme);
-//	options.AddSecurityRequirement(new OpenApiSecurityRequirement
-//	{
-//		{ jwtSecurityScheme, Array.Empty<string>() }
-//	});
-//});
+	options.AddSecurityDefinition("Bearer", jwtSecurityScheme);
+	options.AddSecurityRequirement(new OpenApiSecurityRequirement
+	{
+		{ jwtSecurityScheme, Array.Empty<string>() }
+	});
+});
 
 builder.Services.AddScoped<IDiseasesService, DiseasesService>();
 builder.Services.AddScoped<ISymptomsService, SymptomsService>();
 builder.Services.AddScoped<IHealthStatusService, HealthStatusesService>();
 builder.Services.AddScoped<IUsersService, UsersService>();
+builder.Services.AddScoped<IDiagnosesService, DiagnosesService>();
 
 //them cau hinh authentication voi jwt
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

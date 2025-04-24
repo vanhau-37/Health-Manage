@@ -1,4 +1,5 @@
 ﻿using health_backend.Models;
+using health_backend.Models.EntityModels;
 using health_backend.Models.RequestModels;
 using health_backend.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -20,7 +21,7 @@ namespace health_backend.Controllers
         }
         // GET: api/<HealthStatusesController>
         [HttpGet]
-		public async Task<IActionResult> Get(int pageIndex = 0, int pageSize = 5)
+		public async Task<IActionResult> Get(int pageIndex = 0, int pageSize = 7)
 		{
 			var result = await _service.GetHealthStatuses(pageIndex, pageSize);
 			if(result.Status)
@@ -28,15 +29,24 @@ namespace health_backend.Controllers
 			return BadRequest(result);
 		}
 
-		// GET api/<HealthStatusesController>/5
 		[HttpGet("{id}")]
-		public async Task<IActionResult> Get(int id)
+		public async Task<IActionResult> Get(int id, DateTime? from, DateTime? to, int pageIndex = 0, int pageSize = 5)
 		{
-			var result = await _service.GetHealthStatusById(id);
+			var result = await _service.GetHealthStatusesById(id, pageIndex, pageSize, from, to);
 			if (result.Status)
 				return Ok(result);
 			return BadRequest(result);
 		}
+
+		// GET api/<HealthStatusesController>/5
+		//[HttpGet("{id}")]
+		//public async Task<IActionResult> Get(int id)
+		//{
+		//	var result = await _service.GetHealthStatusById(id);
+		//	if (result.Status)
+		//		return Ok(result);
+		//	return BadRequest(result);
+		//}
 
 		// POST api/<HealthStatusesController>
 		[HttpPost]
@@ -88,5 +98,6 @@ namespace health_backend.Controllers
 				return Ok(result);
 			return BadRequest(result);
 		}
+
 	}
 }

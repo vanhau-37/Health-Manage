@@ -22,7 +22,7 @@ namespace health_backend.Controllers
         // GET: api/<UsersController>
         [HttpGet]
 		[Authorize]
-		public async Task<IActionResult> Get(int pageIndex = 0, int pageSize = 5)
+		public async Task<IActionResult> Get(int pageIndex = 0, int pageSize = 7)
 		{
 			var result = await _service.GetUsers(pageIndex, pageSize);
 			if (result.Status) return Ok(result);
@@ -72,10 +72,20 @@ namespace health_backend.Controllers
 
 		}
 
-		// PUT api/<UsersController>/5
-		[HttpPut("{id}")]
-		public void Put(int id, [FromBody] string value)
+		// PUT api/<UsersController>
+		[HttpPut]
+		public async Task<IActionResult> Put(UpdatedRequestModel model)
 		{
+			BaseResponseModel response = new BaseResponseModel();
+			if (ModelState.IsValid)
+			{
+				var result = await _service.UpdatedUser(model);
+				if (result.Status) return Ok(result);
+				return BadRequest(result);
+			}
+			response.Status = false;
+			response.Message = "Nhập dữ liệu sai";
+			return BadRequest(response);
 		}
 
 		// DELETE api/<UsersController>/5
@@ -83,7 +93,7 @@ namespace health_backend.Controllers
 		[Authorize(Roles = "Admin")]
 		public async Task<IActionResult> Delete(int id)
 		{
-			var result = await _service.DeleteUser(id);
+			var result = await _service.DeletedUser(id);
 			if (result.Status) return Ok(result);
 			return BadRequest(result);
 		}

@@ -32,6 +32,7 @@ namespace health_backend.Services.Implementations
 				{
 					var oldFileName = Path.GetFileName(oldImageUrl);
 					var oldFullPath = Path.Combine(newPath, oldFileName);
+					
 					if (File.Exists(oldFullPath))
 					{
 						File.Delete(oldFullPath);
@@ -82,6 +83,7 @@ namespace health_backend.Services.Implementations
 					{
 						Name = model.Name,
 						Description = model.Description,
+						MarkdownContent = model.MarkdownContent,
 						Image = model.Image,
 						ListSymptom = symptoms
 					};
@@ -94,6 +96,7 @@ namespace health_backend.Services.Implementations
 						Id = newDisease.Id,
 						Name = newDisease.Name,
 						Description = newDisease.Description,
+						MarkdownContent = newDisease.MarkdownContent,
 						Image = newDisease.Image,
 						ListSymptom = symptoms.Select(x => new SymptomDto()
 						{
@@ -111,7 +114,7 @@ namespace health_backend.Services.Implementations
 				response.Status = false;
 				response.Message = "Du lieu trieu chung khong hop le";
 			}
-			catch (Exception ex)
+			catch (Exception)
 			{
 				response.Status = false;
 				response.Message = "Đã xảy ra lỗi";
@@ -154,7 +157,10 @@ namespace health_backend.Services.Implementations
 			BaseResponseModel response = new BaseResponseModel();
 			try
 			{
-				var diseaseDetail =  await _dbContext.Diseases.Include(y => y.ListSymptom).Where(x => x.Id == id).FirstOrDefaultAsync();
+				var diseaseDetail =  await _dbContext.Diseases
+					.Include(y => y.ListSymptom)
+					.Where(x => x.Id == id)
+					.FirstOrDefaultAsync();
 				if(diseaseDetail == null)
 				{
 					response.Status = false;
@@ -178,17 +184,39 @@ namespace health_backend.Services.Implementations
 			return response;
 		}
 
-		public async Task<BaseResponseModel> GetDiseases(int pageIndex, int pageSize)
+		public async Task<BaseResponseModel> GetDiseases(string? searchText, int pageIndex, int pageSize)
 		{
 			BaseResponseModel response = new BaseResponseModel();
 			try
 			{
 				var diseaseCount = await _dbContext.Diseases.CountAsync();
-				var diseaseList = _mapper.Map<List<DiseaseDto>>( await _dbContext.Diseases.Include(x => x.ListSymptom).Skip(pageSize*pageIndex).Take(pageSize).OrderByDescending(y => y.Id).ToListAsync());
+				var diseaseList = new List<DiseaseDto>();
+				if (string.IsNullOrEmpty(searchText))
+				{
+					diseaseList = _mapper.Map<List<DiseaseDto>>( 
+						await _dbContext.Diseases
+						.Include(x => x.ListSymptom)
+						.OrderByDescending(y => y.Id)
+						.Skip(pageSize*pageIndex)
+						.Take(pageSize)
+						.ToListAsync());
+				}
+				else
+				{
+					diseaseCount = await _dbContext.Diseases.Where(x => x.Name.Contains(searchText)).CountAsync();
+					diseaseList = _mapper.Map<List<DiseaseDto>>(
+						await _dbContext.Diseases
+						.Where(d => d.Name.Contains(searchText))
+						.Include(x => x.ListSymptom)
+						.OrderByDescending(y => y.Id)
+						.Skip(pageSize * pageIndex)
+						.Take(pageSize)
+						.ToListAsync());
+				}
 				
 				response.Status = true;
 				response.Message = "Success";
-				response.Data = new { Diseases = diseaseList, Count = diseaseCount};
+				response.Data = new { Diseases = diseaseList, TotalPage =Math.Ceiling((float)diseaseCount/pageSize)};
 				
 			}
 			catch (Exception)
@@ -239,6 +267,7 @@ namespace health_backend.Services.Implementations
 				}
 				diseaseDetail.Name = model.Name;
 				diseaseDetail.Description = model.Description;
+				diseaseDetail.MarkdownContent = model.MarkdownContent;
 				diseaseDetail.Image = model.Image;
 
 				//Xoa cac trieu chung k co trong ds moi
@@ -262,6 +291,7 @@ namespace health_backend.Services.Implementations
 					Id = diseaseDetail.Id,
 					Name = diseaseDetail.Name,
 					Description = diseaseDetail.Description,
+					MarkdownContent = diseaseDetail.MarkdownContent,
 					Image = diseaseDetail.Image,
 					ListSymptom = symptoms.Select(x => new SymptomDto()
 					{
@@ -277,7 +307,7 @@ namespace health_backend.Services.Implementations
 				return response;
 
 			}
-			catch (Exception ex)
+			catch (Exception)
 			{
 				response.Status = false;
 				response.Message = "Đã xảy ra lỗi";
