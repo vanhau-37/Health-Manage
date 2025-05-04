@@ -6,6 +6,7 @@ using health_backend.Models.EntityModels;
 using health_backend.Models.RequestModels;
 using health_backend.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace health_backend.Services.Implementations
 {
@@ -13,17 +14,18 @@ namespace health_backend.Services.Implementations
 	{
 		private readonly HealthDbContext _dbContext;
 		private readonly IMapper _mapper;
-		public DiagnosesService(HealthDbContext dbContext, IMapper mapper)
+		public DiagnosesService(HealthDbContext dbContext, IMapper mapper, IMemoryCache memoryCache)
 		{
 			_dbContext = dbContext;
 			_mapper = mapper;
 		}
+
 		public async Task<BaseResponseModel> DiagnosisDisease(CreatedHealthStatusModel model)
 		{
 			BaseResponseModel response = new BaseResponseModel();
 			try
 			{
-				var listDisease = _mapper.Map<List<DiseaseDto>>( await _dbContext.Diseases.Include(x => x.ListSymptom).ToListAsync());
+				var listDisease = _mapper.Map<List<DiseaseDto>>(await _dbContext.Diseases.Include(x => x.ListSymptom).ToListAsync());
 				var diagnosis = listDisease.Select(disease => new
 				{
 					detailDisease = disease,
@@ -40,10 +42,10 @@ namespace health_backend.Services.Implementations
 				var isExistDiagnosis = await _dbContext.Diagnoses
 					.Where(d => d.HealthStatusId == model.Id)
 					.FirstOrDefaultAsync();
-				if(isExistDiagnosis != null)
+				if (isExistDiagnosis != null)
 				{
 					isExistDiagnosis.DiseaseId = diagnosis.detailDisease.Id;
-					
+
 					_dbContext.Diagnoses.Update(isExistDiagnosis);
 					_dbContext.SaveChanges();
 				}
@@ -71,5 +73,6 @@ namespace health_backend.Services.Implementations
 			return response;
 		}
 
+		
 	}
 }

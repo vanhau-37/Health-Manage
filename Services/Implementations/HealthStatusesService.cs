@@ -50,6 +50,35 @@ namespace health_backend.Services.Implementations
 			return response;
 		}
 
+		public async Task<BaseResponseModel> CreatedHealthStatusAutoMLTable(int userId, CreateHealthStatusAutoMLTable model)
+		{
+			BaseResponseModel response = new BaseResponseModel();
+			try
+			{
+				var newHealthStatus = new HealthStatus
+				{
+					Weight = model.Weight,
+					Height = model.Height,
+					Temperature = model.Temperature,
+					Status = model.Status,
+					UserId = userId,//lay o controller
+				};
+				_dbContext.HealthStatuses.Add(newHealthStatus);
+				await _dbContext.SaveChangesAsync();
+
+				response.Status = true;
+				response.Message = "Success";
+				response.Data = newHealthStatus;
+
+			}
+			catch (Exception)
+			{
+				response.Status = false;
+				response.Message = "Đã xảy ra lỗi";
+			}
+			return response;
+		}
+
 		public async Task<BaseResponseModel> DeletedHealthStatus(int id)
 		{
 			BaseResponseModel response = new BaseResponseModel();
@@ -116,44 +145,6 @@ namespace health_backend.Services.Implementations
 			}
 			return response;
 		}
-		//public async Task<BaseResponseModel> GetHealthStatuses(int pageIndex, int pageSize)
-		//{
-		//	BaseResponseModel response = new BaseResponseModel();
-		//	try
-		//	{
-		//		var healthStatusCount = await _dbContext.HealthStatuses.CountAsync();
-		//		var healthStatusList = await _dbContext.HealthStatuses
-		//			.OrderByDescending(x => x.Id)
-		//			.Skip(pageSize * pageIndex).Take(pageSize)
-		//			.Include(u => u.User)
-		//			.Include(hs => hs.Diagnosis)
-		//			.ThenInclude(d => d.Disease) 
-		//			.ToListAsync();
-
-		//		var symptomList = await _dbContext.Symptoms.ToListAsync();
-
-		//		var listDetailHS = healthStatusList.Select( healthStatus =>
-		//		{
-		//			HealthStatusDetail detailHealthStatus = new HealthStatusDetail();
-		//			_mapper.Map(healthStatus, detailHealthStatus);
-
-		//			detailHealthStatus.DiagnosisOfDisease = healthStatus.Diagnosis != null 
-		//			? healthStatus.Diagnosis.Disease.Name : null;
-		//			return detailHealthStatus;
-		//		});
-
-		//		response.Status = true;
-		//		response.Message = "Success";
-		//		response.Data = new { HealthStatuses = listDetailHS, TotalPage =Math.Ceiling((float)healthStatusCount/pageSize) };
-
-		//	}
-		//	catch (Exception)
-		//	{
-		//		response.Status = false;
-		//		response.Message = "Đã xảy ra lỗi";
-		//	}
-		//	return response;
-		//}
 		
 		public async Task<BaseResponseModel> GetHealthStatusesById(int id, int pageIndex, int pageSize, DateTime? from, DateTime? to)
 		{
@@ -161,17 +152,7 @@ namespace health_backend.Services.Implementations
 			try
 			{
 				var healthStatusList = new List<HealthStatus>();
-				//if(from.HasValue && to.HasValue)
-				//{
-				//	healthStatusList = await _dbContext.HealthStatuses
-				//	.Where(x => x.UserId == id && x.CreateDate <= to && x.CreateDate >= from)
-				//	.OrderByDescending(x => x.Id)
-				//	.Skip(pageSize * pageIndex).Take(pageSize)
-				//	.Include(hs => hs.Diagnosis)
-				//	.ThenInclude(d => d.Disease)
-				//	.ToListAsync();
-				//}
-
+		
 				healthStatusList = await _dbContext.HealthStatuses
 					.Where(x => x.UserId == id)
 					.OrderByDescending(x => x.Id)
@@ -203,10 +184,10 @@ namespace health_backend.Services.Implementations
 
 				var dtoList = healthStatusList.Select( healthStatus =>
 				{
-					var listIdStatus = string.IsNullOrEmpty(healthStatus.Status)
-					? new List<int>(): JsonSerializer.Deserialize<List<int>>(healthStatus.Status);
-
 					var dto = _mapper.Map<HealthStatusDto>(healthStatus);
+
+					var listIdStatus = healthStatus.ListIdStatus;
+
 					dto.ListIdStatus = listIdStatus;
 
 					dto.ListSymptom =  _mapper.Map<List<SymptomDto>>(symptomList.
@@ -256,6 +237,47 @@ namespace health_backend.Services.Implementations
 				healthStatusDetail.Height = model.Height;
 				healthStatusDetail.Temperature = model.Temperature;
 				healthStatusDetail.ListIdStatus = model.ListIdStatus;
+				
+				await _dbContext.SaveChangesAsync();
+
+				response.Status = true;
+				response.Message = "Success";
+				response.Data = healthStatusDetail;
+
+			}
+			catch (Exception)
+			{
+				response.Status = false;
+				response.Message = "Đã xảy ra lỗi";
+			}
+			return response;
+		}
+		
+		public async Task<BaseResponseModel> UpdatedHealthStatusAutoMLTable(CreateHealthStatusAutoMLTable model)
+		{
+			BaseResponseModel response = new BaseResponseModel();
+			try
+			{
+				var healthStatusDetail = await _dbContext.HealthStatuses
+					.Where(x => x.Id == model.Id)
+					.Include(d => d.Diagnosis)
+					.FirstOrDefaultAsync();
+				if (healthStatusDetail == null)
+				{
+					response.Status = false;
+					response.Message = "Du lieu khong ton tai";
+					return response;
+				}
+
+				if(healthStatusDetail.Diagnosis != null)
+				{
+					_dbContext.Diagnoses.Remove(healthStatusDetail.Diagnosis);
+					healthStatusDetail.Diagnosis = null;
+				}
+				healthStatusDetail.Weight = model.Weight;
+				healthStatusDetail.Height = model.Height;
+				healthStatusDetail.Temperature = model.Temperature;
+				healthStatusDetail.Status = model.Status;
 				
 				await _dbContext.SaveChangesAsync();
 

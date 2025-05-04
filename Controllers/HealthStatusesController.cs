@@ -38,16 +38,6 @@ namespace health_backend.Controllers
 			return BadRequest(result);
 		}
 
-		// GET api/<HealthStatusesController>/5
-		//[HttpGet("{id}")]
-		//public async Task<IActionResult> Get(int id)
-		//{
-		//	var result = await _service.GetHealthStatusById(id);
-		//	if (result.Status)
-		//		return Ok(result);
-		//	return BadRequest(result);
-		//}
-
 		// POST api/<HealthStatusesController>
 		[HttpPost]
 		[Authorize]
@@ -68,19 +58,56 @@ namespace health_backend.Controllers
 			response.Message = "Nhập dữ liệu sai";
 			return BadRequest(response);
 		}
+		
+		[HttpPost("AddAutoMLTable")]
+		[Authorize]
+		public async Task<IActionResult> Post(CreateHealthStatusAutoMLTable model)
+		{
+			BaseResponseModel response = new BaseResponseModel();
+			var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+			if(userId == null) return Unauthorized();
+			
+			if (ModelState.IsValid)
+			{
+				var result = await _service.CreatedHealthStatusAutoMLTable(int.Parse(userId), model);
+				if (result.Status) return Ok(result);
+				return BadRequest(result);
+			}
+			response.Status = false;
+			response.Message = "Nhập dữ liệu sai";
+			return BadRequest(response);
+		}
 
 		// PUT api/<HealthStatusesController>/5
 		[HttpPut]
 		public async Task<IActionResult> Put(CreatedHealthStatusModel model)
 		{
 			BaseResponseModel response = new BaseResponseModel();
-			var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-			userId = "1";
-			if (userId == null) return Unauthorized();
+			//var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+			//if (userId == null) return Unauthorized();
 
 			if (ModelState.IsValid)
 			{
 				var result = await _service.UpdatedHealthStatus(model);
+				if (result.Status) return Ok(result);
+				return BadRequest(result);
+			}
+			response.Status = false;
+			response.Message = "Nhập dữ liệu sai";
+			return BadRequest(response);
+		}
+		
+		[HttpPut("UpdateAutoMLTable")]
+		public async Task<IActionResult> Put(CreateHealthStatusAutoMLTable model)
+		{
+			BaseResponseModel response = new BaseResponseModel();
+			//var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+			//if (userId == null) return Unauthorized();
+
+			if (ModelState.IsValid)
+			{
+				var result = await _service.UpdatedHealthStatusAutoMLTable(model);
 				if (result.Status) return Ok(result);
 				return BadRequest(result);
 			}

@@ -11,6 +11,7 @@ namespace health_backend.Services.Interfaces
 		Task<BaseResponseModel> Register(RegisterRequestModel model);
 		Task<BaseResponseModel> Login(LoginRequestModel model);
 		Task<BaseResponseModel> UpdatedUser(UpdatedRequestModel model);
+		Task<BaseResponseModel> UpdatedUserById(UpdateUserRequestModel model);
 
 	}
 }

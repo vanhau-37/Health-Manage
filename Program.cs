@@ -1,4 +1,5 @@
-﻿using health_backend.Data;
+﻿using Google.Cloud.AIPlatform.V1;
+using health_backend.Data;
 using health_backend.Services.Implementations;
 using health_backend.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -21,6 +22,9 @@ builder.Services.AddDbContext<HealthDbContext>( option =>
 
 //Add automapper
 builder.Services.AddAutoMapper(typeof(Program));
+
+//Add memory cache
+builder.Services.AddMemoryCache();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -53,6 +57,7 @@ builder.Services.AddScoped<ISymptomsService, SymptomsService>();
 builder.Services.AddScoped<IHealthStatusService, HealthStatusesService>();
 builder.Services.AddScoped<IUsersService, UsersService>();
 builder.Services.AddScoped<IDiagnosesService, DiagnosesService>();
+builder.Services.AddScoped<VertexAiService>();
 
 //them cau hinh authentication voi jwt
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

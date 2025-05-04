@@ -1,9 +1,8 @@
-﻿using health_backend.Models.EntityModels;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace health_backend.Models.RequestModels
 {
-	public class CreatedHealthStatusModel
+	public class CreateHealthStatusAutoMLTable
 	{
 		public int Id { get; set; }
 
@@ -22,16 +21,8 @@ namespace health_backend.Models.RequestModels
 		[RegularExpression(@"^\d+(\.\d{1,2})?$", ErrorMessage = "Nhiêt độ phải là số.")]
 		public float Temperature { get; set; }
 
-		[NotEmptyList(ErrorMessage = "Vui lòng chọn ít nhất 3 trạng thái.")]
-		public List<int> ListIdStatus { get; set; }
-	}
-
-	public class NotEmptyList : ValidationAttribute
-	{
-		public override bool IsValid(object value)
-		{
-			var list = value as List<int>;
-			return list != null&&list.Count > 2;
-		}
+		[Required(ErrorMessage = "Vui lòng nhập trạng thái hiện tại.")]
+		public string Status { get; set; }
+		
 	}
 }

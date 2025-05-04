@@ -234,5 +234,47 @@ namespace health_backend.Services.Implementations
 			}
 			return response;
 		}
+		public async Task<BaseResponseModel> UpdatedUserById(UpdateUserRequestModel model)
+		{
+			BaseResponseModel response = new BaseResponseModel();
+			try
+			{
+				var existUser = await _dbContext.Users.Where(x => x.Id == model.Id).FirstOrDefaultAsync();
+				if (existUser == null)
+				{
+					response.Status = false;
+					response.Message = "Người dùng không tồn tại";
+					return response;
+				}
+
+				if(VerifyPassword(model.Password, existUser.Password))
+				{
+					var hashPassword = BCrypt.Net.BCrypt.HashPassword(model.PasswordNew);
+					existUser.Password = hashPassword;
+					existUser.PhoneNumber = model.PhoneNumber;
+					existUser.FullName = model.FullName;
+					existUser.Gender = model.Gender;
+
+					await _dbContext.SaveChangesAsync();
+
+					response.Status = true;
+					response.Message = "Success";
+					response.Data = existUser;
+				}
+				else
+				{
+					response.Status = false;
+					response.Message = "Mật khẩu không chính xác";
+				}		
+
+			}
+			catch (Exception)
+			{
+
+				response.Status = false;
+				response.Message = "Đã xảy ra lỗi";
+			}
+			return response;
+		}
 	}
 }

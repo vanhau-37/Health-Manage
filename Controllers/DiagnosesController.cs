@@ -27,5 +27,14 @@ namespace health_backend.Controllers
 			return BadRequest(result);
 		}
 
+		//[HttpPost("AutoMLTable")]
+		//public async Task<IActionResult> PostAutoMLTable(CreateHealthStatusAutoMLTable model)
+		//{
+		//	var result = await _service.DiagnosisDiseaseAutoMLTable(model);
+		//	if (result.Status)
+		//		return Ok(result);
+		//	return BadRequest(result);
+		//}
+
 	}
 }

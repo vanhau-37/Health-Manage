@@ -87,6 +87,21 @@ namespace health_backend.Controllers
 			response.Message = "Nhập dữ liệu sai";
 			return BadRequest(response);
 		}
+		
+		[HttpPut("Update")]
+		public async Task<IActionResult> Put(UpdateUserRequestModel model)
+		{
+			BaseResponseModel response = new BaseResponseModel();
+			if (ModelState.IsValid)
+			{
+				var result = await _service.UpdatedUserById(model);
+				if (result.Status) return Ok(result);
+				return BadRequest(result);
+			}
+			response.Status = false;
+			response.Message = "Nhập dữ liệu sai";
+			return BadRequest(response);
+		}
 
 		// DELETE api/<UsersController>/5
 		[HttpDelete("{id}")]
