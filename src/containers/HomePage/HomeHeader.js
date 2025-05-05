@@ -9,6 +9,11 @@ class HomeHeader extends Component {
         this.props.history.push(path);
     };
 
+    handleLogOut = (path) => {
+        this.props.processLogout();
+        this.props.history.push(path);
+    };
+
     render() {
         const { processLogout, userInfo, searchedDisease, stringText } =
             this.props;
@@ -16,13 +21,25 @@ class HomeHeader extends Component {
             <React.Fragment>
                 <div className="home-header-container">
                     <div className="home-header-content">
-                        <div className="left-content">
-                            <div
-                                className="header-logo"
-                                onClick={() => this.handleViewPage("/home")}
-                            ></div>
+                        <div
+                            className="left-content"
+                            onClick={() => this.handleViewPage("/home")}
+                        >
+                            <div className="header-logo"></div>
+                            <div className="name-logo">Hemoni</div>
                         </div>
                         <div className="center-content">
+                            <div
+                                className="child-content"
+                                onClick={() => this.handleViewPage("/home")}
+                            >
+                                <div>
+                                    <b>Giới thiệu</b>
+                                </div>
+                                <div className="subs-title">
+                                    Thông tin và chức năng
+                                </div>
+                            </div>
                             <div
                                 className="child-content"
                                 onClick={() =>
@@ -66,14 +83,34 @@ class HomeHeader extends Component {
                             )}
                             <div>
                                 <span className="welcome">
-                                    {userInfo && userInfo.unique_name
-                                        ? `Welcom, ${userInfo.unique_name}!`
-                                        : ""}
+                                    {userInfo && userInfo.unique_name ? (
+                                        <>
+                                            Welcom,
+                                            <span
+                                                style={{
+                                                    color: "blue",
+                                                    cursor: "pointer",
+                                                }}
+                                                onClick={() => {
+                                                    this.handleViewPage(
+                                                        "/userdetail"
+                                                    );
+                                                }}
+                                            >
+                                                {" "}
+                                                {userInfo.unique_name}!
+                                            </span>{" "}
+                                        </>
+                                    ) : (
+                                        ""
+                                    )}
                                 </span>
                                 {userInfo ? (
                                     <div
                                         className="btn btn-logout"
-                                        onClick={processLogout}
+                                        onClick={() => {
+                                            this.handleLogOut("/login");
+                                        }}
                                         title="Log out"
                                     >
                                         <i className="fas fa-sign-out-alt"></i>

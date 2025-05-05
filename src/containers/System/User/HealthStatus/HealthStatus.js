@@ -3,9 +3,12 @@ import { connect } from "react-redux";
 import "./HealthStatus.scss";
 import {
     createHealthStatusApi,
+    createHealthStatusAutoMLTableApi,
     getAllHealthStatusByIdApi,
     diagnosisDisease,
+    diagnosisDiseaseVertexAi,
     updateHealthStatusApi,
+    updateHealthStatusAutoMLTableApi,
     deleteHealthStatusApi,
 } from "../../../../services/healthStatusService";
 import ModalHealthStatus from "./ModalHealthStatus";
@@ -27,6 +30,7 @@ class HealthStatus extends Component {
                 height: "",
                 temperature: "",
                 listIdStatus: "",
+                // status:"",//VertexAi
             },
             editHealthStatus: {},
             totalPage: 1,
@@ -97,7 +101,6 @@ class HealthStatus extends Component {
                 let copyyState = { ...this.state };
                 copyyState[type] = !copyyState[type];
                 this.setState({
-                    // isOpenModalHealthStatus: !this.state.isOpenModalHealthStatus,
                     ...copyyState,
                 });
             }
@@ -170,6 +173,42 @@ class HealthStatus extends Component {
         }
     };
 
+    // createHealthStatus = async (data) => {//VertexAi
+    //     this.setState({
+    //         errMessage: {
+    //             weight: "",
+    //             height: "",
+    //             temperature: "",
+    //             status: "", //vertexAI
+    //         },
+    //     });
+    //     try {
+    //         await createHealthStatusAutoMLTableApi(data); //vertexAI
+    //         await this.getAllHealthStatusById(
+    //             this.props.userInfo.nameid,
+    //             this.state.from,
+    //             this.state.to,
+    //             this.state.pageIndex
+    //         );
+    //         this.toggleHealthStatusModal("isOpenModalHealthStatus");
+    //         toast.success("Thêm thành công");
+    //         emitter.emit("EVENT_CLEAR_MODAL_DATA");
+    //     } catch (error) {
+    //         if (error.response && error.response.status === 400) {
+    //             this.setState({
+    //                 errMessage: {
+    //                     weight: error.response.data.errors?.Weight?.[0] || "",
+    //                     height: error.response.data.errors?.Height?.[0] || "",
+    //                     temperature:
+    //                         error.response.data.errors?.Temperature?.[0] || "",
+    //                     status:
+    //                         error.response.data.errors?.Status?.[0] || "",
+    //                 },
+    //             });
+    //         }
+    //     }
+    // };
+
     doEditHealthStatus = async (data) => {
         this.setState({
             errMessage: {
@@ -205,6 +244,41 @@ class HealthStatus extends Component {
         }
     };
 
+    // doEditHealthStatus = async (data) => {// VertexAI
+    //     this.setState({
+    //         errMessage: {
+    //             weight: "",
+    //             height: "",
+    //             temperature: "",
+    //             status: "",
+    //         },
+    //     });
+    //     try {
+    //         await updateHealthStatusAutoMLTableApi(data);
+    //         await this.getAllHealthStatusById(
+    //             this.props.userInfo.nameid,
+    //             this.state.from,
+    //             this.state.to,
+    //             this.state.pageIndex
+    //         );
+    //         this.toggleHealthStatusModal("isOpenModalEditHealthStatus");
+    //         toast.success("Cập nhật thành công");
+    //     } catch (error) {
+    //         if (error.response && error.response.status === 400) {
+    //             this.setState({
+    //                 errMessage: {
+    //                     weight: error.response.data.errors?.Weight?.[0] || "",
+    //                     height: error.response.data.errors?.Height?.[0] || "",
+    //                     temperature:
+    //                         error.response.data.errors?.Temperature?.[0] || "",
+    //                     status:
+    //                         error.response.data.errors?.Status?.[0] || "",
+    //                 },
+    //             });
+    //         }
+    //     }
+    // };
+
     handleCheck = async (item) => {
         try {
             console.log("check ", item);
@@ -221,6 +295,27 @@ class HealthStatus extends Component {
             }
         }
     };
+
+    // handleCheck = async (item) => {//vertexAI
+    //     try {
+    //         console.log("check ", item);
+    //         var res = await diagnosisDiseaseVertexAi(item);
+    //         await this.getAllHealthStatusById(
+    //             this.props.userInfo.nameid,
+    //             this.state.from,
+    //             this.state.to,
+    //             this.state.pageIndex
+    //         );
+    //         if (res && res.status === false) {
+    //             toast.error(res.message)
+    //         }
+    //         console.log("check diagnosis VertextAi ",res)
+    //     } catch (error) {
+    //         if (error.response && error.response.status === 400) {
+    //             alert(error.response.data.message);
+    //         }
+    //     }
+    // };
 
     handlePageChange = (pageIndex) => {
         console.log(pageIndex.selected);
@@ -373,7 +468,7 @@ class HealthStatus extends Component {
                                             Trạng thái cơ thể:{" "}
                                             {item.listSymptom
                                                 .map((s) => s.name)
-                                                .join(", ")}
+                                                .join(", ") || item.status}
                                         </div>
                                         <div className="child-content add-width">
                                             Kết quả dự đoán:{" "}

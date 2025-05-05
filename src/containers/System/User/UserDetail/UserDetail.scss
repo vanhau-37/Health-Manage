@@ -1,0 +1,72 @@
+.box {
+    height: 58px;
+}
+.userdetail-backgroud {
+
+    .userdetail-container {
+        margin          : 0 auto;
+        height          : 520px;
+        width           : 50%;
+        background-color: white;
+        border-radius   : 10px;
+        padding         : 10px;
+
+        .userdetail-content {
+            padding: 5px;
+
+            .text-userdetail {
+                text-align : center;
+                font-weight: 600;
+                font-size  : 25px;
+                padding: 0 0 10px 0;
+            }
+
+            .userdetail-input {
+                height: 75px;
+
+                .form-control{
+                    -webkit-appearance: listbox;
+                    height: 33px;
+                }
+
+                .custom-input-password {
+                    position: relative;
+
+                    i {
+                        position: absolute;
+                        right   : 12px;
+                        top     : 10px;
+                        cursor  : pointer;
+                    }
+                }
+
+            }
+            
+            .err-message{
+                color: red;
+            }
+
+            .btn-userdetail {
+                margin       : 10px auto;
+                width        : 70%;
+                height       : 35px;
+                outline      : none;
+                border       : none;
+                border-radius: 15px;
+                font-size    : 18px;
+                background: moccasin;
+                opacity: 0.7;
+                &:hover{
+                    opacity: 1;
+                }
+                
+            }
+
+            .login {
+                color: blue;
+                font-size: 12px;
+                cursor: pointer;
+            }
+        }
+    }
+}

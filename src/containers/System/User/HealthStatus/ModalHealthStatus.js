@@ -15,6 +15,7 @@ class ModalHealthStatus extends Component {
             height: 0,
             temperature: 0,
             status: [],
+            // status: "", //vertexAI
             listIdStatus: [],
         };
         this.listenToEmitter();
@@ -27,7 +28,8 @@ class ModalHealthStatus extends Component {
                 height: 0,
                 temperature: 0,
                 status: [],
-                listIdStatus:[],
+                // status: "", //vertexAI
+                listIdStatus: [],
             });
         });
     }
@@ -40,6 +42,7 @@ class ModalHealthStatus extends Component {
             height: 0,
             temperature: 0,
             status: [],
+            // status: "", //vertexAI
             listIdStatus: [],
         });
         this.props.toggleHealthStatusModal("isOpenModalHealthStatus");
@@ -51,6 +54,7 @@ class ModalHealthStatus extends Component {
             id === "status"
                 ? ev.target.value
                 : parseFloat(ev.target.value) || 0;
+        // copyState[id] = ev.target.value; //vertexAI
         this.setState({
             ...copyState,
         });
@@ -154,6 +158,7 @@ class ModalHealthStatus extends Component {
                             />
                             {/* <textarea
                                 className="text-area"
+                                placeholder="Vui lòng nhập mô tả trạng thái."
                                 onChange={(ev) => {
                                     this.handleOnChangeInput(ev, "status");
                                 }}
@@ -162,6 +167,7 @@ class ModalHealthStatus extends Component {
                             <div className="error-health-status">
                                 <div className="err-message">
                                     {this.props.listError.listIdStatus || ""}
+                                    {/* {this.props.listError.status || ""} */}
                                 </div>
                             </div>
                         </div>

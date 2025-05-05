@@ -14,7 +14,15 @@
         display: flex;
 
         .left-content {
-            width: 20%;
+            width      : 20%;
+            display    : flex;
+            align-items: center;
+            font-size  : 30px;
+            font-weight: 800;
+            color      : cornflowerblue;
+            font-family: "Lucida Console",
+                "Courier New",
+                monospace;
 
             .header-logo {
                 background : url('../../assets/logo.svg') center center no-repeat;
@@ -22,6 +30,10 @@
                 height     : 100%;
                 margin-left: 75px;
                 cursor     : pointer;
+            }
+
+            .name-logo {
+                cursor: pointer;
             }
         }
 
@@ -32,7 +44,11 @@
             align-items    : center;
 
             .child-content {
-                cursor: pointer;
+                width        : 27%;
+                border-bottom: 2px solid;
+                height       : 100%;
+                padding      : 10px 0;
+                cursor       : pointer;
 
                 .subs-title {
                     font-size: 12px;
@@ -61,8 +77,8 @@
                 }
 
                 input:focus {
-                    outline: none;
-                     box-shadow: 0 0 5px 2px #007bff;
+                    outline   : none;
+                    box-shadow: 0 0 5px 2px #007bff;
                 }
             }
 
@@ -147,5 +163,37 @@
 
 .body-container {
     margin: 50px 100px;
-    height: 200px;
+    height: fit-content;
+}
+
+.footer-container {
+    background: #919498;
+    color     : white;
+
+    .footer-content {
+        display        : flex;
+        align-items    : center;
+        height         : 100px;
+        justify-content: space-around;
+
+        .left-content {
+            div{
+                font-size: 14px;
+            }
+        }
+        .right-content {
+            
+            .bottom-content{
+                display: flex;
+                justify-content: space-around;
+            }
+            .icon {
+                background   : white;
+                width        : 31px;
+                height       : 32px;
+                border-radius: 30px;
+
+            }
+        }
+    }
 }

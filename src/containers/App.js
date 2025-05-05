@@ -18,6 +18,7 @@ import HealthStatusPage from "../containers/System/User/HealthStatus/HealthStatu
 import DiseasePage from "./System/User/Disease/DiseasePage.js"; 
 import "./App.scss"
 import DiseaseDetail from "./System/User/Disease/DiseaseDetail.js";
+import UserDetailPage from "./System/User/UserDetail/UserDetailPage.js";
 import Register from "./Auth/Register.js";
 
 class App extends Component {
@@ -70,6 +71,10 @@ class App extends Component {
                                     <Route
                                         path="/disease/:id"
                                         component={DiseaseDetail}
+                                    />
+                                    <Route
+                                        path="/userdetail"
+                                        component={UserDetailPage}
                                     />
                                     <Route
                                         path={path.HOMEPAGE}

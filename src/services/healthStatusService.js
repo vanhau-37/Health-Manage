@@ -11,6 +11,10 @@ export const createHealthStatusApi = (data) => {
     return axios.post("HealthStatuses", data);
 }
 
+export const createHealthStatusAutoMLTableApi = (data) => {
+    return axios.post("HealthStatuses/AddAutoMLTable", data);
+}
+
 export const deleteHealthStatusApi = (id) => {
     return axios.delete(`HealthStatuses/${id}`);
 }
@@ -19,6 +23,13 @@ export const updateHealthStatusApi = (data) => {
     return axios.put("HealthStatuses", data);
 }
 
+export const updateHealthStatusAutoMLTableApi = (data) => {
+    return axios.put("HealthStatuses/UpdateAutoMLTable", data);
+}
+
 export const diagnosisDisease = (data ) => {
     return axios.post("Diagnoses", data);
 }
+export const diagnosisDiseaseVertexAi = (data) => {
+    return axios.post("DiagnosesVertexAi", data);
+};

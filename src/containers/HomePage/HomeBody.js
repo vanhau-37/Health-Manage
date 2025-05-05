@@ -9,27 +9,63 @@ class HomeBody extends Component {
         this.props.history.push("/healthstatus");
     };
     render() {
-        const { processLogout, userInfo } = this.props;
         return (
             <React.Fragment>
-                <div className="body-container">
+                <div className="body-container" style={{ fontSize: "17px" }}>
                     <h2>Giới thiệu</h2>
                     <p>
-                        Website quản lý sức khỏe cá nhân là website giúp người
-                        dùng có thể theo theo dõi tình trạng sức khỏe của bản
-                        thân bằng cách nhập tình trạng sức khỏe hiện tại, hệ
-                        thống có thể lưu trữ các thông tin trạng thái hiện tại
-                        của người dùng và sử dụng cho việc dự đoạn tình trạng
-                        sức khỏe của người. Giúp người dùng có thể biết được
-                        mình có đang mắc bệnh hay không.
+                        Website Quản Lý Sức Khỏe Cá Nhân là một hệ thống hỗ trợ
+                        người dùng trong việc theo dõi tình trạng sức khỏe của
+                        bản thân một cách chủ động, đơn giản và thông minh.
+                        Website hướng đến mục tiêu giúp người dùng:
                     </p>
-                    <p>
-                        Các thông tin về các loại bệnh và triệu chứng của bệnh
-                        giúp người dùng có thêm thông tin để nhận biết chính xác
-                        bệnh mà mình mắc phải.
-                    </p>
+                    <ul>
+                        <li>
+                            Ghi lại và quản lý triệu chứng, chỉ số sức khỏe theo
+                            thời gian.
+                        </li>
+                        <li>
+                            Tìm hiểu thông tin về các bệnh và triệu chứng của
+                            bệnh, những thông tin đáng lưu ý và các phòng ngừa
+                            bệnh.
+                        </li>
+                        <li>
+                            Đưa ra chuẩn đoán bệnh dựa trên triệu chứng người
+                            dùng cung cấp.
+                        </li>
+                        <li>
+                            Đưa ra chuẩn đoán bệnh dựa trên triệu chứng người
+                            dùng cung cấp.
+                        </li>
+                        <li>Tăng khả năng nhận biết bệnh sớm.</li>
+                    </ul>
+                    <hr></hr>
+                    <h2>Các tính năng chính</h2>
+                    <h3>📝 Tình trạng sức khỏe</h3>
+                    <ul>
+                        <li>
+                            Người dùng có thể thêm, cập nhật, xóa, các tình
+                            trạng sức khỏe mà mình đã ghi nhận theo từng thời
+                            điểm.
+                        </li>
+                        <li>Kiểm tra bệnh dựa trên triệu chứng.</li>
+                        <li>
+                            Mỗi tình trạng gồm: triệu chứng, cân nặng, chiều
+                            cao, nhiệt độ, ngày ghi nhận.
+                        </li>
+                    </ul>
+                    <h3>🔍 Tìm kiếm thông tin bệnh</h3>
+                    <ul>
+                        <li>
+                            Cho phép người dùng tìm kiếm thông tin về các loại
+                            bệnh dựa trên tên bệnh.
+                        </li>
+                        <li>
+                            Hiển thị chi tiết: mô tả bệnh, triệu chứng, tác nhân,
+                            đường lây truyền, đối tượng dễ bị ảnh hưởng nặng, phòng ngừa.
+                        </li>
+                    </ul>
                 </div>
-                <div className="footer-container"></div>
             </React.Fragment>
         );
     }

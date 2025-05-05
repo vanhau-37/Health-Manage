@@ -15,7 +15,7 @@ class ModalEditHealthStatus extends Component {
             weight: 0,
             height: 0,
             temperature: 0,
-            // status: [],
+            // status: "", //vertexAI
             listIdStatus: [],
             choose: [],
         };
@@ -29,7 +29,7 @@ class ModalEditHealthStatus extends Component {
                 weight: HS.weight,
                 height: HS.height,
                 temperature: HS.temperature,
-                // status: HS.listIdStatus,
+                // status: HS.status,//vertexAI
                 listIdStatus: HS.listIdStatus,
                 choose: HS.listSymptom.map((s) => ({
                     value: s.id,
@@ -45,7 +45,10 @@ class ModalEditHealthStatus extends Component {
 
     handleOnChangeInput = (ev, id) => {
         let copyState = { ...this.state };
-        copyState[id] = ev.target.value;
+        copyState[id] =
+            id === "status"
+                ? ev.target.value|| ""
+                : parseFloat(ev.target.value) || 0;
         this.setState({
             ...copyState,
         });
@@ -149,6 +152,7 @@ class ModalEditHealthStatus extends Component {
                             />
                             {/* <textarea
                                 className="text-area"
+                                placeholder="Vui lòng nhập mô tả trạng thái."
                                 onChange={(ev) => {
                                     this.handleOnChangeInput(ev, "status");
                                 }}
@@ -157,6 +161,7 @@ class ModalEditHealthStatus extends Component {
                             <div className="error-health-status">
                                 <div className="err-message">
                                     {this.props.listError.listIdStatus || ""}
+                                    {/* {this.props.listError.status || ""} */}
                                 </div>
                             </div>
                         </div>

@@ -70,11 +70,6 @@ class Disease extends Component {
         let arrDisease = this.state.arrDisease;
         return (
             <>
-                {/* <div className="search-container">
-                    <div className="search-input">
-                        <input type="text" placeholder="Search for a disease" />
-                    </div>
-                </div> */}
                 <div className="disease-container">
                     <div className="box"></div>
                     {arrDisease &&
