@@ -24,17 +24,28 @@ namespace health_backend.Services.Implementations
 			BaseResponseModel response = new BaseResponseModel();
 			try
 			{
-				var newSymptom = new Symptom
+				var isExistSymptom = await _dbContext.Symptoms
+					.Where(s => s.Name==model.Name)
+					.FirstOrDefaultAsync();
+				if (isExistSymptom == null)
 				{
-					Name = model.Name,
-					Description = model.Description,
-				};
-				_dbContext.Symptoms.Add(newSymptom);
-				await _dbContext.SaveChangesAsync();
+					var newSymptom = new Symptom
+					{
+						Name = model.Name,
+						Description = model.Description,
+					};
+					_dbContext.Symptoms.Add(newSymptom);
+					await _dbContext.SaveChangesAsync();
 
-				response.Status = true;
-				response.Message = "Success";
-				response.Data = newSymptom;
+					response.Status = true;
+					response.Message = "Success";
+					response.Data = newSymptom;
+				}
+				else {
+					response.Status = false;
+					response.Message = "Triệu chứng đã tồn tại.";
+				}
+
 
 			}
 			catch (Exception)
@@ -98,11 +109,12 @@ namespace health_backend.Services.Implementations
 			BaseResponseModel response = new BaseResponseModel();
 			try
 			{
-				var symptomCount = await _dbContext.Symptoms.CountAsync();
+				var symptomCount = await _dbContext.Symptoms.AsNoTracking().CountAsync();
 				var symptomList = _mapper.Map<List<SymptomDto>>( await _dbContext
 					.Symptoms.OrderByDescending(x => x.Id)
 					.Skip(pageSize * pageIndex)
 					.Take(pageSize)
+					.AsNoTracking()
 					.ToListAsync());
 				
 				response.Status = true;

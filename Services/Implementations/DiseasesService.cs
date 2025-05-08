@@ -160,6 +160,7 @@ namespace health_backend.Services.Implementations
 				var diseaseDetail =  await _dbContext.Diseases
 					.Include(y => y.ListSymptom)
 					.Where(x => x.Id == id)
+					.AsNoTracking()
 					.FirstOrDefaultAsync();
 				if(diseaseDetail == null)
 				{
@@ -189,7 +190,7 @@ namespace health_backend.Services.Implementations
 			BaseResponseModel response = new BaseResponseModel();
 			try
 			{
-				var diseaseCount = await _dbContext.Diseases.CountAsync();
+				var diseaseCount = await _dbContext.Diseases.AsNoTracking().CountAsync();
 				var diseaseList = new List<DiseaseDto>();
 				if (string.IsNullOrEmpty(searchText))
 				{
@@ -199,6 +200,7 @@ namespace health_backend.Services.Implementations
 						.OrderByDescending(y => y.Id)
 						.Skip(pageSize*pageIndex)
 						.Take(pageSize)
+						.AsNoTracking()
 						.ToListAsync());
 				}
 				else
@@ -211,6 +213,7 @@ namespace health_backend.Services.Implementations
 						.OrderByDescending(y => y.Id)
 						.Skip(pageSize * pageIndex)
 						.Take(pageSize)
+						.AsNoTracking()
 						.ToListAsync());
 				}
 				
@@ -236,7 +239,7 @@ namespace health_backend.Services.Implementations
 				{
 					x.Id,
 					x.Name,
-				}).ToListAsync();
+				}).AsNoTracking().ToListAsync();
 
 				response.Status = true;
 				response.Message = "Success";

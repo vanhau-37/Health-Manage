@@ -1,6 +1,7 @@
 ﻿using health_backend.Models.EntityModels;
 using health_backend.Models.RequestModels;
 using health_backend.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -19,6 +20,7 @@ namespace health_backend.Controllers
 
         // POST api/<DiagnosesController>
         [HttpPost]
+		[Authorize]
 		public async Task<IActionResult> Post(CreatedHealthStatusModel model)
 		{
 			var result = await _service.DiagnosisDisease(model);

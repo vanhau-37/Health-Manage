@@ -72,7 +72,8 @@ namespace health_backend.Services.Implementations
 					_memoryCache.Set(cacheKey, listSymptoms, TimeSpan.FromMinutes(10));
 				}
 
-				var words = model.Status.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+				char[] delimiters = { ' ', ',', '.', ';', ':', '!', '?' };
+				var words = model.Status.Split(delimiters, StringSplitOptions.RemoveEmptyEntries);
 				var usefulWords = words.Where(w => listSymptoms.Any(s => s.Contains(w.ToLower()))).ToList();
 				var reverseUsefulWords = usefulWords.Reverse<string>().ToList();
 				var input = string.Join(" ", usefulWords);
@@ -118,7 +119,7 @@ namespace health_backend.Services.Implementations
 				{
 					var score1 = matches1.First(m => m.Name == name).Score;
 					var score2 = matches2.First(m => m.Name == name).Score;
-					if((score1 >= 75 || score2 >= 75) && !matches.Any(m => m.Name == name))
+					if((score1 >= 80 || score2 >= 80) && !matches.Any(m => m.Name == name))
 					{
 						matches.Add(new MatchResult { Name = name, Score = Math.Max(score1,score2) });
 					}
@@ -176,7 +177,7 @@ namespace health_backend.Services.Implementations
 				{
 					response.Status = false;
 					response.Message = "Không tìm được bênh dựa trên mô tả này";
-					response.Data = new { matches, listSymptoms };
+					response.Data = new { matches, result };
 				}
 				else
 				{

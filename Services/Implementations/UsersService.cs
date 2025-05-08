@@ -37,6 +37,7 @@ namespace health_backend.Services.Implementations
 					.OrderByDescending(x => x.Id)
 					.Skip(pageSize * pageIndex)
 					.Take(pageSize)
+					.AsNoTracking()
 					.ToListAsync());
 				
 				response.Status = true;
@@ -139,7 +140,10 @@ namespace health_backend.Services.Implementations
 			BaseResponseModel response = new BaseResponseModel();
 			try
 			{
-				var userDetail = _mapper.Map<UserDto>( await _dbContext.Users.Where(x => x.Id == userId).AsNoTracking().FirstAsync());
+				var userDetail = _mapper.Map<UserDto>( await _dbContext.Users
+					.Where(x => x.Id == userId)
+					.AsNoTracking()
+					.FirstAsync());
 				if (userDetail == null)
 				{
 					response.Status = false;

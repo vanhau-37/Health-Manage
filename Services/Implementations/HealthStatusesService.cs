@@ -118,10 +118,11 @@ namespace health_backend.Services.Implementations
 					.Skip(pageSize * pageIndex).Take(pageSize)
 					.Include(u => u.User)
 					.Include(hs => hs.Diagnosis)
-					.ThenInclude(d => d.Disease) 
+					.ThenInclude(d => d.Disease)
+					.AsNoTracking()
 					.ToListAsync();
 
-				var symptomList = await _dbContext.Symptoms.ToListAsync();
+				var symptomList = await _dbContext.Symptoms.AsNoTracking().ToListAsync();
 
 				var listDetailHS = healthStatusList.Select( healthStatus =>
 				{
@@ -159,6 +160,7 @@ namespace health_backend.Services.Implementations
 					.Skip(pageSize * pageIndex).Take(pageSize)
 					.Include(hs => hs.Diagnosis)
 					.ThenInclude(d => d.Disease)
+					.AsNoTracking()
 					.ToListAsync();
 
 				if (from.HasValue)
@@ -174,13 +176,14 @@ namespace health_backend.Services.Implementations
 					.ToList();
 				}
 
-				var healthStatusCount = 0;
-				if(healthStatusList != null && healthStatusList.Count > 0)
-				{
-					healthStatusCount = healthStatusList.Count();
-				}
-	
-				var symptomList = await _dbContext.Symptoms.ToListAsync();
+				var healthStatusCount = await _dbContext.HealthStatuses
+					.Where(x => x.UserId == id).CountAsync();
+				//if(healthStatusList != null && healthStatusList.Count > 0)
+				//{
+				//	healthStatusCount = healthStatusList.Count();
+				//}
+
+				var symptomList = await _dbContext.Symptoms.AsNoTracking().ToListAsync();
 
 				var dtoList = healthStatusList.Select( healthStatus =>
 				{
@@ -201,7 +204,10 @@ namespace health_backend.Services.Implementations
 
 				response.Status = true;
 				response.Message = "Success";
-				response.Data = new { HealthStatuses = dtoList, TotalPage = Math.Ceiling((float)healthStatusCount / pageSize) };
+				response.Data = new { 
+					HealthStatuses = dtoList, 
+					TotalPage = Math.Ceiling((float)healthStatusCount / pageSize) 
+				};
 
 			}
 			catch (Exception)
