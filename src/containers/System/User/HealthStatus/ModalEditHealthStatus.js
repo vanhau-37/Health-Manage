@@ -15,7 +15,7 @@ class ModalEditHealthStatus extends Component {
             weight: 0,
             height: 0,
             temperature: 0,
-            // status: "", //vertexAI
+            status: "", //vertexAI
             listIdStatus: [],
             choose: [],
         };
@@ -29,7 +29,7 @@ class ModalEditHealthStatus extends Component {
                 weight: HS.weight,
                 height: HS.height,
                 temperature: HS.temperature,
-                // status: HS.status,//vertexAI
+                status: HS.status,//vertexAI
                 listIdStatus: HS.listIdStatus,
                 choose: HS.listSymptom.map((s) => ({
                     value: s.id,
@@ -142,26 +142,26 @@ class ModalEditHealthStatus extends Component {
                         </div>
                         <div className="input-container max-width-input add-height-input">
                             <label>Trạng thái cơ thể</label>
-                            <AsyncSelect
+                            {/* <AsyncSelect
                                 cacheOption
                                 defaultOptions
                                 isMulti
                                 value={this.state.choose}
                                 loadOptions={this.loadOptions}
                                 onChange={this.multiSelectChange}
-                            />
-                            {/* <textarea
+                            /> */}
+                            <textarea
                                 className="text-area"
                                 placeholder="Vui lòng nhập mô tả trạng thái."
                                 onChange={(ev) => {
                                     this.handleOnChangeInput(ev, "status");
                                 }}
                                 value={this.state.status}
-                            ></textarea> */}
+                            ></textarea>
                             <div className="error-health-status">
                                 <div className="err-message">
-                                    {this.props.listError.listIdStatus || ""}
-                                    {/* {this.props.listError.status || ""} */}
+                                    {/* {this.props.listError.listIdStatus || ""} */}
+                                    {this.props.listError.status || ""}
                                 </div>
                             </div>
                         </div>

@@ -3,7 +3,6 @@ import * as actions from "../../store/actions";
 import { connect } from "react-redux";
 import "./HomeHeader.scss";
 import { withRouter } from "react-router";
-
 class HomeBody extends Component {
     handleViewPageDisease = () => {
         this.props.history.push("/healthstatus");

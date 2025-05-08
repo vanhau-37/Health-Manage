@@ -14,8 +14,8 @@ class ModalHealthStatus extends Component {
             weight: 0,
             height: 0,
             temperature: 0,
-            status: [],
-            // status: "", //vertexAI
+            // status: [],
+            status: "", //vertexAI
             listIdStatus: [],
         };
         this.listenToEmitter();
@@ -27,8 +27,8 @@ class ModalHealthStatus extends Component {
                 weight: 0,
                 height: 0,
                 temperature: 0,
-                status: [],
-                // status: "", //vertexAI
+                // status: [],
+                status: "", //vertexAI
                 listIdStatus: [],
             });
         });
@@ -41,8 +41,8 @@ class ModalHealthStatus extends Component {
             weight: 0,
             height: 0,
             temperature: 0,
-            status: [],
-            // status: "", //vertexAI
+            // status: [],
+            status: "", //vertexAI
             listIdStatus: [],
         });
         this.props.toggleHealthStatusModal("isOpenModalHealthStatus");
@@ -50,11 +50,11 @@ class ModalHealthStatus extends Component {
 
     handleOnChangeInput = (ev, id) => {
         let copyState = { ...this.state };
-        copyState[id] =
-            id === "status"
-                ? ev.target.value
-                : parseFloat(ev.target.value) || 0;
-        // copyState[id] = ev.target.value; //vertexAI
+        // copyState[id] =
+        //     id === "status"
+        //         ? ev.target.value
+        //         : parseFloat(ev.target.value) || 0;
+        copyState[id] = ev.target.value; //vertexAI
         this.setState({
             ...copyState,
         });
@@ -148,26 +148,26 @@ class ModalHealthStatus extends Component {
                         </div>
                         <div className="input-container max-width-input add-height-input">
                             <label>Trạng thái cơ thể</label>
-                            <AsyncSelect
+                            {/* <AsyncSelect
                                 cacheOption
                                 defaultOptions
                                 isMulti
                                 value={this.state.status}
                                 loadOptions={this.loadOptions}
                                 onChange={this.multiSelectChange}
-                            />
-                            {/* <textarea
+                            /> */}
+                            <textarea
                                 className="text-area"
                                 placeholder="Vui lòng nhập mô tả trạng thái."
                                 onChange={(ev) => {
                                     this.handleOnChangeInput(ev, "status");
                                 }}
                                 value={this.state.status}
-                            ></textarea> */}
+                            ></textarea>
                             <div className="error-health-status">
                                 <div className="err-message">
-                                    {this.props.listError.listIdStatus || ""}
-                                    {/* {this.props.listError.status || ""} */}
+                                    {/* {this.props.listError.listIdStatus || ""} */}
+                                    {this.props.listError.status || ""}
                                 </div>
                             </div>
                         </div>
