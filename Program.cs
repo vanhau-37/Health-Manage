@@ -20,6 +20,8 @@ builder.Services.AddDbContext<HealthDbContext>( option =>
 	option.UseSqlServer(builder.Configuration["ConnectionStrings:ConnectedDb"]);
 });
 
+builder.Services.AddHttpClient();
+
 //Add automapper
 builder.Services.AddAutoMapper(typeof(Program));
 

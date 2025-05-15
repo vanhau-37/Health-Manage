@@ -19,9 +19,11 @@ namespace health_backend.Controllers
         {
             _service = service;
         }
+
         // GET: api/<HealthStatusesController>
         [HttpGet]
-		public async Task<IActionResult> Get(int pageIndex = 0, int pageSize = 7)
+		[Authorize]
+		public async Task<IActionResult> Get(int pageIndex = 0, int pageSize = 8)
 		{
 			var result = await _service.GetHealthStatuses(pageIndex, pageSize);
 			if(result.Status)
@@ -30,6 +32,7 @@ namespace health_backend.Controllers
 		}
 
 		[HttpGet("{id}")]
+		[Authorize]
 		public async Task<IActionResult> Get(int id, DateTime? from, DateTime? to, int pageIndex = 0, int pageSize = 5)
 		{
 			var result = await _service.GetHealthStatusesById(id, pageIndex, pageSize, from, to);
@@ -81,11 +84,10 @@ namespace health_backend.Controllers
 
 		// PUT api/<HealthStatusesController>/5
 		[HttpPut]
+		[Authorize]
 		public async Task<IActionResult> Put(CreatedHealthStatusModel model)
 		{
 			BaseResponseModel response = new BaseResponseModel();
-			//var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-			//if (userId == null) return Unauthorized();
 
 			if (ModelState.IsValid)
 			{
@@ -118,6 +120,7 @@ namespace health_backend.Controllers
 
 		// DELETE api/<HealthStatusesController>/5
 		[HttpDelete("{id}")]
+		[Authorize]
 		public async Task<IActionResult> Delete(int id)
 		{
 			var result = await _service.DeletedHealthStatus(id);

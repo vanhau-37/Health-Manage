@@ -20,8 +20,8 @@ namespace health_backend.Data
 			modelBuilder.Entity<HealthStatus>()
 				.HasOne(hs => hs.Diagnosis)  // Một HealthStatus có một Diagnosis
 				.WithOne(d => d.HealthStatus) // Một Diagnosis có một HealthStatus
-				.HasForeignKey<Diagnosis>(d => d.HealthStatusId) // `Diagnosis` phụ thuộc vào `HealthStatus`
-				.OnDelete(DeleteBehavior.Cascade); // Xóa `HealthStatus` thì xóa luôn `Diagnosis`
+				.HasForeignKey<Diagnosis>(d => d.HealthStatusId) // Diagnosis phụ thuộc vào HealthStatus
+				.OnDelete(DeleteBehavior.Cascade); // Xóa HealthStatus thì xóa luôn Diagnosis
 
 			base.OnModelCreating(modelBuilder);
 		}

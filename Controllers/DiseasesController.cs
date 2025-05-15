@@ -19,7 +19,7 @@ namespace health_backend.Controllers
         }
         // GET: api/<DiseaseController>
         [HttpGet]
-		public async Task<IActionResult> Get(string? stringText, int pageIndex = 0, int pageSize = 5)
+		public async Task<IActionResult> Get(string? stringText, int pageIndex = 0, int pageSize = 6)
 		{
 			var result = await _service.GetDiseases(stringText, pageIndex, pageSize);
 			if(result.Status) return Ok(result);

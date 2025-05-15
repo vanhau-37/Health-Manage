@@ -29,6 +29,15 @@ namespace health_backend.Controllers
 			return BadRequest(result);
 		}
 
+		[HttpPost("CozeAi")]
+		public async Task<IActionResult> Post([FromBody]string description)
+		{
+			var result = await _service.DiagnosisDiseaseCozeAI(description);
+			if (result.Status)
+				return Ok(result);
+			return BadRequest(result);
+		}
+
 		//[HttpPost("AutoMLTable")]
 		//public async Task<IActionResult> PostAutoMLTable(CreateHealthStatusAutoMLTable model)
 		//{

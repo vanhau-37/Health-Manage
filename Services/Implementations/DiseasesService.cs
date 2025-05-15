@@ -5,6 +5,7 @@ using health_backend.Models.Dtos;
 using health_backend.Models.EntityModels;
 using health_backend.Models.RequestModels;
 using health_backend.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using System.Net.Http.Headers;
 
@@ -25,7 +26,8 @@ namespace health_backend.Services.Implementations
 			BaseResponseModel response = new BaseResponseModel();
 			try
 			{
-				var fileName = ContentDispositionHeaderValue.Parse(imgFile.ContentDisposition).FileName.TrimStart('\"').TrimEnd('\"');
+				var fileName = ContentDispositionHeaderValue.Parse(imgFile.ContentDisposition).FileName
+					.TrimStart('\"').TrimEnd('\"');
 				var newPath = @"D:\Project .Net\w-Health\Back-End\health-backend\health-backend\ImageDiseases";
 				//Xóa ảnh cũ nếu có
 				if (!string.IsNullOrEmpty(oldImageUrl))
@@ -71,11 +73,19 @@ namespace health_backend.Services.Implementations
 			return response;
 		}
 
+		[Authorize]
 		public async Task<BaseResponseModel> CreatedDisease(CreatedDiseaseModel model)
 		{
 			BaseResponseModel response = new BaseResponseModel();
 			try
 			{
+				var isExistDisease = _dbContext.Diseases.Any(d => d.Name.ToLower() == model.Name.ToLower());
+				if (isExistDisease)
+				{
+					response.Status = false;
+					response.Message = "Bệnh đã tồn tại.";
+					return response;
+				}
 				var symptoms = await _dbContext.Symptoms.Where(x => model.ListSymptom.Contains(x.Id)).ToListAsync();
 				if(symptoms.Count() == model.ListSymptom.Count())
 				{
@@ -90,6 +100,15 @@ namespace health_backend.Services.Implementations
 
 					_dbContext.Diseases.Add(newDisease);
 					_dbContext.SaveChanges();
+
+					//Gọi thủ tục cập nhật lại thống kê của các bảng, giúp bộ tối ưu hóa truy vấn của SQL Server
+					using (var command = _dbContext.Database.GetDbConnection().CreateCommand())
+					{
+						command.CommandText = "EXEC sp_updatestats";
+						_dbContext.Database.OpenConnection();
+						await command.ExecuteNonQueryAsync();
+						_dbContext.Database.CloseConnection(); 
+					}
 
 					var responseData = new DiseaseDto()
 					{
@@ -122,6 +141,7 @@ namespace health_backend.Services.Implementations
 			return response;
 		}
 
+		[Authorize]
 		public async Task<BaseResponseModel> DeletedDisease(int id)
 		{
 			BaseResponseModel response = new BaseResponseModel();
@@ -185,6 +205,7 @@ namespace health_backend.Services.Implementations
 			return response;
 		}
 
+		[Authorize]
 		public async Task<BaseResponseModel> GetDiseases(string? searchText, int pageIndex, int pageSize)
 		{
 			BaseResponseModel response = new BaseResponseModel();
@@ -197,7 +218,7 @@ namespace health_backend.Services.Implementations
 					diseaseList = _mapper.Map<List<DiseaseDto>>( 
 						await _dbContext.Diseases
 						.Include(x => x.ListSymptom)
-						.OrderByDescending(y => y.Id)
+						.OrderBy(y => y.Id)
 						.Skip(pageSize*pageIndex)
 						.Take(pageSize)
 						.AsNoTracking()
@@ -230,16 +251,24 @@ namespace health_backend.Services.Implementations
 			return response;
 		}
 
+		[Authorize]
 		public async Task<BaseResponseModel> SearchDisease(string searchText)
 		{
 			BaseResponseModel response = new BaseResponseModel();
 			try
 			{
-				var searched = await _dbContext.Diseases.Where(x => x.Name.Contains(searchText)).Select(x => new
+				var searched = _mapper.Map<DiseaseDto>(await _dbContext.Diseases
+					.Where(x => x.Name.ToLower().Contains(searchText.ToLower()))
+					.Include(s => s.ListSymptom)
+					.AsNoTracking()
+					.FirstOrDefaultAsync());
+
+				if(searched == null)
 				{
-					x.Id,
-					x.Name,
-				}).AsNoTracking().ToListAsync();
+					response.Status = true;
+					response.Message = "Không tìm thấy bệnh phù hợp trên hệ thống";
+					return response;
+				}
 
 				response.Status = true;
 				response.Message = "Success";
@@ -254,6 +283,7 @@ namespace health_backend.Services.Implementations
 			return response;
 		}
 
+		[Authorize]
 		public async Task<BaseResponseModel> UpdatedDisease(CreatedDiseaseModel model)
 		{
 			BaseResponseModel response = new BaseResponseModel();

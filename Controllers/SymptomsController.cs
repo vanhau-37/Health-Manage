@@ -1,6 +1,7 @@
 ﻿using health_backend.Models;
 using health_backend.Models.Dtos;
 using health_backend.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -18,7 +19,7 @@ namespace health_backend.Controllers
         }
         // GET: api/<SymptomsController>
         [HttpGet]
-		public async Task<IActionResult> Get(int pageIndex = 0, int pageSize = 7)
+		public async Task<IActionResult> Get(int pageIndex = 0, int pageSize = 8)
 		{
 			var result = await _service.GetSymptoms(pageIndex, pageSize);
 			if(result.Status) return Ok(result);
@@ -44,6 +45,7 @@ namespace health_backend.Controllers
 
 		// POST api/<SymptomsController>
 		[HttpPost]
+		[Authorize]
 		public async Task<IActionResult> Post(SymptomDto model)
 		{
 			BaseResponseModel response = new BaseResponseModel();
@@ -61,6 +63,7 @@ namespace health_backend.Controllers
 
 		// PUT api/<SymptomsController>/5
 		[HttpPut]
+		[Authorize]
 		public async Task<IActionResult> Put(SymptomDto model)
 		{
 			BaseResponseModel response = new BaseResponseModel();
@@ -78,6 +81,7 @@ namespace health_backend.Controllers
 
 		// DELETE api/<SymptomsController>/5
 		[HttpDelete("{id}")]
+		[Authorize]
 		public async Task<IActionResult> Delete(int id)
 		{
 			var result = await _service.DeleteSymptom(id);

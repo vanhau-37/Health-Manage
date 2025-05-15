@@ -37,6 +37,14 @@ namespace health_backend.Services.Implementations
 				_dbContext.HealthStatuses.Add(newHealthStatus);
 				await _dbContext.SaveChangesAsync();
 
+				using (var command = _dbContext.Database.GetDbConnection().CreateCommand())
+				{
+					command.CommandText = "EXEC sp_updatestats";
+					_dbContext.Database.OpenConnection();
+					await command.ExecuteNonQueryAsync();
+					_dbContext.Database.CloseConnection(); 
+				}
+
 				response.Status = true;
 				response.Message = "Success";
 				response.Data = newHealthStatus;
@@ -178,10 +186,6 @@ namespace health_backend.Services.Implementations
 
 				var healthStatusCount = await _dbContext.HealthStatuses
 					.Where(x => x.UserId == id).CountAsync();
-				//if(healthStatusList != null && healthStatusList.Count > 0)
-				//{
-				//	healthStatusCount = healthStatusList.Count();
-				//}
 
 				var symptomList = await _dbContext.Symptoms.AsNoTracking().ToListAsync();
 
@@ -193,8 +197,11 @@ namespace health_backend.Services.Implementations
 
 					dto.ListIdStatus = listIdStatus;
 
-					dto.ListSymptom =  _mapper.Map<List<SymptomDto>>(symptomList.
-						Where(x => listIdStatus.Contains(x.Id)).ToList());
+					dto.ListSymptom = _mapper.Map<List<SymptomDto>>(listIdStatus
+						.Select(id => symptomList
+						.FirstOrDefault(s => s.Id==id))
+						.Where(x => x != null)
+						.ToList());
 
 					dto.DiagnosisOfDisease = healthStatus.Diagnosis != null 
 					? healthStatus.Diagnosis.Disease.Name : null;
@@ -245,6 +252,14 @@ namespace health_backend.Services.Implementations
 				healthStatusDetail.ListIdStatus = model.ListIdStatus;
 				
 				await _dbContext.SaveChangesAsync();
+
+				using (var command = _dbContext.Database.GetDbConnection().CreateCommand())
+				{
+					command.CommandText = "EXEC sp_updatestats";
+					_dbContext.Database.OpenConnection();
+					await command.ExecuteNonQueryAsync();
+					_dbContext.Database.CloseConnection();
+				}
 
 				response.Status = true;
 				response.Message = "Success";

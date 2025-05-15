@@ -124,6 +124,8 @@ namespace health_backend.Services.Implementations
 						matches.Add(new MatchResult { Name = name, Score = Math.Max(score1,score2) });
 					}
 				}
+
+				matches = matches.OrderBy(d => d.Name).ToList();
 				// Gán vào PredictRequest
 				var predictInput = new DiagnosisRequestModel
 				{

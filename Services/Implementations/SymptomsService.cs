@@ -111,7 +111,7 @@ namespace health_backend.Services.Implementations
 			{
 				var symptomCount = await _dbContext.Symptoms.AsNoTracking().CountAsync();
 				var symptomList = _mapper.Map<List<SymptomDto>>( await _dbContext
-					.Symptoms.OrderByDescending(x => x.Id)
+					.Symptoms.OrderBy(x => x.Id)
 					.Skip(pageSize * pageIndex)
 					.Take(pageSize)
 					.AsNoTracking()
